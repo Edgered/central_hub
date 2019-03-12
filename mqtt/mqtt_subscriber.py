@@ -15,15 +15,31 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
     # more callbacks, etc
- 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
- 
-client.connect(MQTT_SERVER, 1883, 60)
- 
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
-client.loop_forever()
+
+def main():
+    parser = argparse.ArgumentParser(description='set input file')
+    parser.add_argument('path_name', type=str, 
+            help='select path name', default='lpu2hub')
+    parser.add_argument('server_name', type=str, 
+            help='select the server_name', default='localhost') 
+    parser.add_argument('timeout', type=float, 
+            help='select the timeout', default='60') 
+    client = mqtt.Client()
+
+    MQTT_SERVER = args.server_name
+    MQTT_PATH = args.path_name
+
+    client.on_connect = on_connect
+    client.on_message = on_message
+    
+    client.connect(MQTT_SERVER, 1883, args.timeout)
+    
+    # Blocking call that processes network traffic, dispatches callbacks and
+    # handles reconnecting.
+    # Other loop*() functions are available that give a threaded interface and a
+    # manual interface.
+    client.loop_forever()
+
+if __name__ == '__main__':
+    main()
+
