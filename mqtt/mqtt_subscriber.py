@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+import argparse
  
 MQTT_SERVER = "localhost"
 MQTT_PATH = "test_channel"
@@ -22,9 +23,10 @@ def main():
             help='select path name', default='lpu2hub')
     parser.add_argument('server_name', type=str, 
             help='select the server_name', default='localhost') 
-    parser.add_argument('timeout', type=float, 
-            help='select the timeout', default='60') 
+    parser.add_argument('timeout', type=int, 
+            help='select the timeout', default=60) 
     client = mqtt.Client()
+    args = parser.parse_args()
 
     MQTT_SERVER = args.server_name
     MQTT_PATH = args.path_name
@@ -32,7 +34,7 @@ def main():
     client.on_connect = on_connect
     client.on_message = on_message
     
-    client.connect(MQTT_SERVER, 1883, args.timeout)
+    client.connect(MQTT_SERVER, 1883, int(args.timeout))
     
     # Blocking call that processes network traffic, dispatches callbacks and
     # handles reconnecting.
